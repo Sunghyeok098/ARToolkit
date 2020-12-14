@@ -1,0 +1,169 @@
+本書に収録されている開発環境のデータについて
+
+
+■基本方針
+
+ARToolKit公式サイトで配布されている以下のファイル
+
+　・ARToolKit-2.72.1-bin-win32.zip
+　・OpenVRML-0.14.3-win32.zip
+
+に改変を加えたものを収録しています．ただし，関連するライブラリの
+入れ替えなども行っています．以下にその詳細を示します．
+
+
+■構築環境
+
+Microsoft Visual C++ 2008 Express Edition
+
+
+■ベースファイル
+
+●ARToolKit
+入手元：http://sourceforge.net/project/showfiles.php?group_id=116280
+ファイル：ARToolKit-2.72.1-bin-win32.zip
+
+●OpenVRML
+入手元：http://sourceforge.net/project/showfiles.php?group_id=116280
+ファイル：OpenVRML-0.14.3-win32.zip
+
+●zlib
+入手元：http://www.zlib.net
+ファイル：zlib123.zip
+
+●libjpeg
+入手元：http://www.ijg.org/
+ファイル：jpegsr6.zip
+
+●libpng
+入手元：http://www.libpng.org/pub/png/libpng.html
+ファイル：lpng1228.zip
+
+
+■修正内容
+
+----------------------------------------------------------------------------
+[1] OpenVRMLに関連するライブラリのコンパイル
+----------------------------------------------------------------------------
+
+　zlib，libjpeg，libpngをそれぞれコンパイルしてライブラリ（*.lib）を作成．
+
+
+----------------------------------------------------------------------------
+[2] OpenVRMLの修正と再コンパイル
+----------------------------------------------------------------------------
+
+１．[1]で使用した以下のヘッダファイルを {OpenVRML}\dependencies\include に
+　　上書きコピー．
+
+	zconf.h　zlib.h
+	jconfig.h　jerror.h　jmorecfg.h　jpeglib.h
+	png.h　pngconf.h
+
+２．[1]で作成した以下のライブラリファイルを {OpenVRML}\dependencies\lib に
+　　上書きコピー．
+
+	libjpeg.lib　libpng.lib　zlib.lib
+
+３．{ARToolKit}\OpenVRML\src\openvrml-0.14.3\ide-projects\Windows\VisualC7
+    \OpenVRML\にある「OpenVRML.sln」をVC++2008で開く．このとき，旧ファイルは
+　　「OpenVRML.sln.old」という名前で保存される．
+
+４．{ARToolKit}\OpenVRML\src\openvrml-0.14.3\lib\regex\ にある「regerror.c」の
+　　116行目から120行目を以下のように訂正．
+
+   regerror(int errcode, const regex_t *preg, char *errbuf, size_t errbuf_size)
+   // regerror(errcode, preg, errbuf, errbuf_size)
+   // int errcode;
+   // const regex_t *preg;
+   // char *errbuf;
+   // size_t errbuf_size;
+
+５．{ARToolKit}\OpenVRML\src\openvrml-0.14.3\lib\antlr\antlr\ にある
+　　「AST.hpp」の151行目を以下のように訂正．
+
+　（変更前）inline operator<(RefAST l,RefAST r); // {return true;}
+　（変更後）int inline operator<(RefAST l,RefAST r); // {return true;}
+
+６．{ARToolKit}\OpenVRML\src\openvrml-0.14.3\lib\antlr\antlr\ にある
+　「Token.hpp」の76行目を以下のように訂正．
+
+　（変更前）inline operator<(RefToken l,RefToken r); //{return true;}
+　（変更後）int inline operator<(RefToken l,RefToken r); //{return true;}
+
+７．{ARToolKit}\OpenVRML\src\openvrml-0.14.3\src\libopenvrml\openvrml\ にある
+　　「img.cpp」の40行目付近（ヘッダのインクルード直後）に，以下のコードを追加.
+　　これはJPEGのエラー対策．
+
+	#define XMD_H
+	#ifdef FAR
+	#undef FAR
+	#endif
+
+８．openvrmlのプロパティ→構成プロパティ→C/C++→プリプロセッサ→
+　　「プリプロセッサの定義」に以下の2つを追加（Debug，Release両方）．
+
+	OPENVRML_ENABLE_IMAGETEXTURE_NODE
+	OPENVRML_ENABLE_GZIP
+
+９．antlr，openvrml，openvrml-gl，regexの各プロパティ（ライブラリアン→全般→
+　　出力ファイル）においてデバッグ版の出力ファイル名を antlrd.lib，openvrmld.lib，　　openvrml-gld.lib，regexd.libに変更．
+
+１０．antlr，openvrml，openvrml-gl，regexの4つをDebugとReleaseでビルド．
+
+１１．ビルドしてできた以下の8つのファイルを{ARToolKit}\OpenVRML\lib に
+　　上書きコピー．
+
+　　antlrd.lib　antlr.lib　openvrmld.lib　openvrml.lib
+　　openvrml-gld.lib　openvrml-gl.lib　regexd.lib　regex.lib
+
+
+----------------------------------------------------------------------------
+[3] ARToolKitの修正とコンパイルしなおし
+----------------------------------------------------------------------------
+
+１．{ARToolKit}\ARToolKit.sln をVC++2008で開く．このとき，旧ファイルは
+　　「ARToolKit.sln.old」という名前で保存される．
+
+２．libARvideoのプロパティ（Debug）→構成プロパティ→リンカ→入力→
+　　「追加の依存ファイル」を以下のように変更．
+
+　（変更前）DSVLd.lib comsupp.lib
+　（変更後）DSVL.lib comsupp.lib
+
+３．simpleVRMLのプロパティ（Debug）→構成プロパティ→リンカ→入力→
+　　「追加の依存ファイル」を以下のように設定．
+
+	opengl32.lib
+	glu32.lib
+	glut32.lib
+	libARvrmld.lib
+	libARvideod.lib
+	libARd.lib
+	libARgsub_lited.lib
+	openvrmld.lib     　 ← 変更箇所
+	openvrml-gld.lib  　 ← 変更箇所
+	antlrd.lib        　 ← 変更箇所
+	regexd.lib        　 ← 変更箇所
+	ws2_32.lib
+	libjpeg.lib
+	libpng.lib
+	zlib.lib
+
+４．ソリューション全体をDebugとReleaseの両方でビルド．
+
+
+以上．
+
+
+
+－－－－－－－－－－－－－－－－－－－－－－－－－－－
+
+株式会社アスキー・メディアワークス
+http://asciimw.jp/
+
+※ご意見・ご指導ご鞭撻・注意訂正依頼はこちらまでお願いいたします。
+edit8-artoolkit@ml.asciimw.jp
+
+
+2008/09/18 初版作成

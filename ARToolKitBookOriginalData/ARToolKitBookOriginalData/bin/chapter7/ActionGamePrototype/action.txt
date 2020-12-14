@@ -1,0 +1,34 @@
+#シーケンス数
+[seq_num]	4
+
+# 棒立ち
+[seq_file]	ninja/stand/stand_%d.mqo
+[seq_frame]	1
+[scale]		0.5
+[rotate]	90.0, 1.0, 0.0, 0.0
+[translate]	0.0, 0.0, 0.0
+[end]
+
+# 歩く
+[seq_file]	ninja/walk_stay/walk_stay_%d.mqo
+[seq_frame]	30
+[scale]		0.5
+[rotate]	90.0, 1.0, 0.0, 0.0
+[translate]	0.0, 0.0, 0.0
+[end]
+
+# 走る
+[seq_file]	ninja/run_stay/run_stay_%d.mqo
+[seq_frame]	20
+[scale]		0.5
+[rotate]	90.0, 1.0, 0.0, 0.0
+[translate]	0.0, 0.0, 0.0
+[end]
+
+# 刀
+[seq_file]	ninja/katana_stay/katana_stay_%d.mqo
+[seq_frame]	20
+[scale]		0.5
+[rotate]	90.0, 1.0, 0.0, 0.0
+[translate]	0.0, 0.0, 0.0
+[end]

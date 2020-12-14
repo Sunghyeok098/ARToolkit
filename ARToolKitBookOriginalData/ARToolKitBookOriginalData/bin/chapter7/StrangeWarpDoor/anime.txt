@@ -1,0 +1,34 @@
+#シーケンス数
+[seq_num]	4
+
+# ドア(in)
+[seq_file]	seq/door_in/door_in_%d.mqo
+[seq_frame]	50
+[scale]		1.0
+[rotate]	90.0, 1.0, 0.0, 0.0
+[translate]	0.0, 0.0, 0.0
+[end]
+
+# ドア(out)
+[seq_file]	seq/door_out/door_out_%d.mqo
+[seq_frame]	50
+[scale]		1.0
+[rotate]	90.0, 1.0, 0.0, 0.0
+[translate]	0.0, 0.0, 0.0
+[end]
+
+# 歩くキャラクタ1
+[seq_file]	seq/walk_stay/walk_stay_%d.mqo
+[seq_frame]	30
+[scale]		0.5
+[rotate]	90.0, 1.0, 0.0, 0.0
+[translate]	0.0, 0.0, 0.0
+[end]
+
+# 歩くキャラクタ2
+[seq_file]	seq/walk_stay/walk_stay_%d.mqo
+[seq_frame]	30
+[scale]		0.5
+[rotate]	90.0, 1.0, 0.0, 0.0
+[translate]	0.0, 0.0, 0.0
+[end]
